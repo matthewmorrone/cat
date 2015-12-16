@@ -1,0 +1,199 @@
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+::-webkit-scrollbar {
+	display: none;
+}
+
+table,
+th,
+td {
+	border: 1px solid #e7e7e7;
+	border-collapse: collapse;
+}
+
+th {
+	text-align: center;
+}
+
+.rotate {
+	transform: rotate(270deg) translate(-45px, 65px);
+}
+
+th div {
+	height: 150px;
+	width: 25px;
+	white-space: nowrap;
+}
+
+td {
+	text-align: right;
+}
+</style>
+<script src="js/jquery.js"></script>
+<script src="js/decimal.js"></script>
+<script src="pdfjs/build/pdf.js"></script>
+<script src="pdfjs/build/pdf.worker.js"></script>
+<!-- <link rel="stylesheet" type="text/css" href="/reset.css" /> -->
+<script>
+Array.prototype.min = function() {
+	return Math.min.apply(null, this)
+}
+Array.prototype.max = function() {
+	return Math.max.apply(null, this)
+}
+Array.prototype.unique = function() {
+	var o = {},
+		i, l = this.length,
+		r = [];
+	for (i = 0; i < l; i += 1) o[this[i]] = this[i];
+	for (i in o) r.push(o[i]);
+	return r;
+};
+Array.prototype.chunk = function(chunkSize) {
+	var R = []
+	for (var i = 0; i < this.length; i += chunkSize) {
+		R.push(this.slice(i, i + chunkSize))
+	}
+	return R
+}
+$ = jQuery
+var log = console.log.bind(console)
+undefined = undefined
+$(function() {
+	function csv(array) {
+		var r =  "<br />"+array.map(function(row) {return row.join(',')}).join('<br />')
+
+
+		return r
+	}
+
+
+
+	// function escapeCell(x) {
+	// 	return /,|"/.test(x) ? '"' + x + '"' : x
+	// }
+
+	function createTable(tableData) {
+		var table = document.createElement('table'),
+			tableBody = document.createElement('tbody')
+		tableData.forEach(function(rowData) {
+			var row = document.createElement('tr')
+			rowData.forEach(function(cellData) {
+				var cell = document.createElement('td')
+				cell.appendChild(document.createTextNode(cellData))
+				row.appendChild(cell)
+			})
+			tableBody.appendChild(row)
+		})
+		table.appendChild(tableBody)
+		return table
+	}
+	$(".pdf").click(function(e) {
+		e.preventDefault()
+		e.stopPropagation()
+		var $route = $(this),
+			$path = $route.attr("href"),
+			row = parseInt($route.attr("row") || 12, 10) || 12,
+			bounds = $route.attr("bounds")
+		if (bounds) {
+			bounds = bounds.split(",")
+		}
+		bounds[0] = parseInt(bounds[0], 10)
+		bounds[1] = parseInt(bounds[1], 10)
+		PDFJS.getDocument($path).then(function(pdf) {
+			return pdf.getPage(2)
+		}).then(function(page) {
+			var viewport = page.getViewport(1)
+			return page.getTextContent().then(function(text) {
+				var textArr = text.items.map(function(o) {
+					return o.str
+				})
+				var p = $path.replace("Schedule-Template-", "")
+				if (bounds) {
+					textArr = textArr.slice(0, bounds[1])
+					textArr = textArr.slice(bounds[0])
+				}
+				// log(bounds[0], bounds[1], row)
+				var table = textArr
+				table = textArr.chunk(row)
+				// table = createTable(table)
+				table = csv(table)
+				// var fuse = function() {
+				// 	$(this).text($(this).text() + $(this).next().text())
+				// 	$(this).next().remove()
+				// 		// var $th = $("<th class='rotate'></th>")
+				// 		// var $div = $("<div></div>")
+				// 		// $div.text($(this).text().trim())
+				// 		// $th.append($div)
+				// 		// $(this).after($th)
+				// 	$(this).remove()
+				// }
+				// var headerfy = function() {
+				// 	var $th = $("<th></th>")
+				// 	$th.text($(this).text().trim())
+				// 	$(this).after($th)
+				// 	$(this).remove()
+				// }
+				// $(table).find("tr").each(function(i, tr) {
+				// 	$(this).find("td").each(function() {
+				// 			var $td = $(this)
+				// 			$(this).text($(this).text().trim())
+				// 			$(this).text($(this).text().replace(/\(\d+\)\s?/, ""))
+				// 		})
+				// 		// $(this).find("td").eq(0).each(function() {
+				// 		// 	var $td = $(this)
+				// 		// 	if ($(this).text() === "") {
+				// 		// 		$(tr).append($(tr).next().children().first())
+				// 		// 	}
+				// 		// })
+				// 	if ($(this).find("td").eq(0).text().match(/[^:-\d\s]/)) {
+				// 		// $(table).find("tr").eq(i).append($(table).find("tr").eq(i + 1).find("td"))
+				// 		// $(table).find("tr").eq(i).find("td").each(fuse)
+				// 		// $(table).find("tr").eq(i + 1).find("td").each(headerfy)
+				// 	}
+				// })
+				return table
+			})
+		}).then(function(table) {
+			$route.after(table)
+		})
+	})
+	$(".pdf").each(function() {
+			$(this).click()
+		})
+		// var j = 6
+		// $(".pdf").eq(j).click()
+		// $(".pdf").eq(j+1).click()
+})
+</script>
+<div contenteditable=false>
+	<div class="route"><a class="pdf" name="Route1" bounds="13,-6" row="12" href="pdf/Schedule-Template-Route-01-8.5x14.pdf">Route 1 — Market Street</a></div>
+	<div class="route"><a class="pdf" name="Route3" bounds="13,-5" row="18" href="pdf/Route-03-11-16-15.pdf">Route 3 — Third Street</a></div>
+	<div class="route"><a class="pdf" name="Route6" bounds="137,-33" row="10" href="pdf/Schedule-Template-Route-06-8.5x14.pdf">Route 6 — Sixth Street</a></div>
+	<div class="route"><a class="pdf" name="Route7" bounds="13,-3" row="22" href="pdf/Schedule-Template-Route-07-8.5x141.pdf">Route 7 — Middletown</a></div>
+	<div class="route"><a class="pdf" name="Route8" bounds="13,-4" row="15" href="pdf/Schedule-Template-Route-08-8.5x14.pdf">Route 8 — Derry — Rutherford</a></div>
+	<div class="route"><a class="pdf" name="Route9" bounds="15,-5" row="14" href="pdf/Schedule-Template-Route-09-8.5x11.pdf">Route 9 — City Island — HACC</a></div>
+	<div class="route"><a class="pdf" name="Route12" bounds="3,-69" row="14" href="pdf/Route-12-Colonial-Park-5-26-152.pdf">Route 12 — Colonial Park — Colonial Commons — Gateway — Linglestown</a></div>
+	<div class="route"><a class="pdf" name="Route13" bounds="14,-1" row="12" href="pdf/Route-13-1-12-15.pdf">Route 13 — Paxton Street</a></div>
+	<div class="route"><a class="pdf" name="Route14" bounds="" row="12" href="pdf/Route-14-9-14-15-rev-1.pdf">Route 14 — Union Deposit — Four Seasons</a></div>
+	<div class="route"><a class="pdf" name="Route16" bounds="" row="12" href="pdf/Schedule-Template-Route-16-8.5x11.pdf">Route 16 — Pennswood</a></div>
+	<div class="route"><a class="pdf" name="Route17" bounds="" row="12" href="pdf/Schedule-Template-Route-17-8.5x14.pdf">Route 17 — 17th Street &amp; Union Deposit Road</a></div>
+	<div class="route"><a class="pdf" name="Route19" bounds="" row="12" href="pdf/Schedule-Template-Route-19-8.5x14.pdf">Route 19 — Steelton</a></div>
+	<div class="route"><a class="pdf" name="Route20" bounds="" row="12" href="pdf/Route-20-5-26-15.pdf">Route 20 — High Pointe Commons</a></div>
+	<div class="route"><a class="pdf" name="Route23" bounds="" row="12" href="pdf/Route-23-Millersburg-5-26-152.pdf">Route 23 — Elizabethville — Millersburg — Halifax</a></div>
+	<div class="route"><a class="pdf" name="Route24" bounds="" row="12" href="pdf/Route-24-Springford-Apt-5-26-152.pdf">Route 24 — Springford Apartments via Locust Lane</a></div>
+	<div class="route"><a class="pdf" name="Route27" bounds="" row="12" href="pdf/Schedule-Template-Route-27-8.5x11.pdf">Route 27 — Hall Manor via Hamilton Health Center</a></div>
+	<div class="route"><a class="pdf" name="Route39" bounds="" row="12" href="pdf/Schedule-Template-Route-39-8.5x111.pdf">Route 39 — Herr Street — Blue Mt. Commons</a></div>
+	<div class="route"><a class="pdf" name="Route81" bounds="" row="12" href="pdf/Route-81-Ship-Newville-Hbg_2014-09-29.pdf">Route 81 — Shippensburg — Newville — Carlisle — Harrisburg Express</a></div>
+	<div class="route"><a class="pdf" name="Route82" bounds="" row="12" href="pdf/Route-82-Shippensburg-Newville-NSA-Express-5-26-152.pdf">Route 82 — Shippensburg — Newville — Mechanicsburg — Naval Base Express</a></div>
+	<div class="route"><a class="pdf" name="Route120" bounds="" row="12" href="pdf/Route-120-Winding-Hill-Express1.pdf">Route 120 — Winding Hill Express</a></div>
+	<div class="route"><a class="pdf" name="Route322" bounds="" row="12" href="pdf/Schedule-Template-Route-322-8.5x14.pdf">Route 322 — Hershey — Hummelstown</a></div>
+	<div class="route"><a class="pdf" name="RouteA" bounds="" row="12" href="pdf/Route-A-New-Cumberland-5-26-153.pdf">Route A — New Cumberland</a></div>
+	<div class="route"><a class="pdf" name="RouteB" bounds="" row="12" href="pdf/Schedule-Template-Route-B-Abacus-8.5x11.pdf">Route B — ABACUS</a></div>
+	<div class="route"><a class="pdf" name="RouteB" bounds="" row="12" href="pdf/Route-B-Highland-Park-5-26-152.pdf">Route B — Highland Park — Westport</a></div>
+	<div class="route"><a class="pdf" name="RouteC1" bounds="" row="12" href="pdf/Route-C-Carlisle-Local-5-19-14.pdf">Route C — Carlisle Local and Commuter Express</a></div>
+	<div class="route"><a class="pdf" name="CarlisleSpecialEvents" bounds="" row="12" href="pdf/Carlisle-Special-Events-Route-Schedule.pdf">Carlisle Special Events</a></div>
+	<div class="route"><a class="pdf" name="RouteD" bounds="" row="12" href="pdf/Route-D-Shoppers-Special-1-12-15.pdf">Route D — Capital City Mall</a></div>
+	<div class="route"><a class="pdf" name="RouteF" bounds="" row="12" href="pdf/Route-F-Enola-1-12-15.pdf">Route F — Enola</a></div>
+	<div class="route"><a class="pdf" name="RouteM" bounds="" row="12" href="pdf/Route-M-Downtown-Mechanicsburg-2013.05.pdf">Route M — Mechanicsburg — Local &amp; Express Service</a></div>
+</div>
