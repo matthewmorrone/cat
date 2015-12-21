@@ -1,0 +1,11 @@
+From Downtown to Springford Apartments From Springford Apartments to Downtown
+Market Square Transfer Center	7th & North	State & 20th	Walnut & 38th	Springford Apartments	Springford Apartments	Walnut & 38th	State & 20th	3rd & Walnut	Market Square Transfer Center
+5:45	5:51	5:56	6:03	6:10	6:14	6:24	6:30	6:40	6:45
+7:20	7:25	7:30	7:37	7:44	7:14	7:24	7:30	7:40	7:45
+PM SERVICE
+7:44	7:54	8:00	8:10	8:15
+3:20	3:27	3:34	3:41	3:51	9:25	9:33	9:39	9:45	9:50
+4:01	4:08	4:15	4:22	4:32
+PM SERVICE
+4:40	4:48	4:56	5:03	5:13	4:34	4:44	4:50	5:00	5:05
+5:30	5:37	5:44	5:51	6:01	5:19	5:29	5:35	5:45	5:50

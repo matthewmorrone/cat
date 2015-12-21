@@ -1,0 +1,30 @@
+
+From Harrisburg To Carlisle
+7th & Basin	Market Square Transfer Center	3rd & Market, Lemoyne	West Shore Plaza	12th & Market	Lemoyne Station 1000 State St.	32nd & Market, Camp Hill	Sporting Hill Rd.	K-Mart P&R	C.I.T	Carlisle Pike @ Hogestown	Carlisle Pike @ New Kingstown	Carlisle Pike & Country Club Rd.	I-81 Exit 52	Hanover & High St., Carlisle Court House	Carlisle Commons WAL-MART
+1	2	7	8		9	10	12	11	13	14	15	16	17
+AM SERVICE
+	5:35	5:40	5:41		5:47	5:53	5:56H		6:03	6:08	6:13	6:24	6:30
+	6:05	6:10	6:11		6:17	6:23	6:26H		6:33	6:38	6:43	6:54	7:00
+7:40	7:50	7:55	7:56	8:03	8:09	8:12H	8:19	8:24	8:29	8:34	8:45	8:51
+	9:35	9:40		9:44	9:51	9:57	10:00H		10:07	10:12	10:17	10:28	10:34
+PM SERVICE
+12:10	12:20	12:25		12:29	12:36	12:42	12:45H		12:52	12:57	1:02	1:13	1:19
+	1:45	1:50	1:52		2:00	2:06	2:10H	2:17	2:22	2:27	2:32	2:43	2:49
+4:35	4:45	4:50	4:51		4:57	5:03	5:06		5:14	5:19	5:24	5:35	5:41
+5:00	5:10	5:15	5:16		5:22	5:28	5:31H		5:39	5:44	5:49	6:00	6:06
+5:30	5:40	5:45	5:46		5:52	5:58	6:01H		6:09	6:14	6:19	6:30	6:36
+From Carlisle to Harrisburg
+Carlisle Commons WAL-MART	Hanover & High St., Carlisle Court House	Carlisle Pike & Country Club Rd. I-81 Exit 52	Carlisle Pike @ New Kingstown	Carlisle Pike @ Hogestown	C.I.T	K-Mart P&R	Sporting Hill Rd. 32nd & Market, Camp Hill	West Shore Plaza	12th & Market	Lemoyne Station 1000 State St.	3rd & Market, Lemoyne	Market Square Transfer Center	7th & Basin
+17	16	15	14	13	11	12	10	9	8		7	2	1
+AM SERVICE
+6:01	6:07	6:18	6:23	6:28	6:35H	6:40	6:46	6:52	6:54	7:00♦
+6:36	6:42	6:53	6:58	7:03	7:10	7:15	7:21	7:27	7:29	7:35	7:45
+7:07	7:13	7:24	7:29	7:34	7:41H	7:45	7:51	7:57	7:59	8:05	8:15
+7:36	7:42	7:53	7:58	8:03	8:08	8:15H	8:20	8:26	8:32	8:34	8:40	8:50
+9:06	9:12	9:23	9:28	9:33	9:40H	9:43	9:49	9:56	10:00	10:05
+10:46	10:52	11:03	11:08	11:13	11:20H	11:23	11:29	11:36	11:40	11:45	11:55
+PM SERVICE
+1:31	1:37	1:48	1:53	1:58		2:05H	2:08	2:14		2:21	2:25	2:30
+3:06	3:14	3:25	3:30	3:35	3:40	3:47H	3:50	3:56	4:02		4:04	4:10	4:19
+5:33	5:39	5:50	5:55	6:00		6:07H	6:11	6:17	6:23		6:25	6:30
+6:18	6:24	6:35	6:40	6:45		6:52H	6:56	7:02	7:08		7:10	7:15

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+::-webkit-scrollbar {
+	display: none;
+}
+body {
+	font-family: calibri;
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+iframe, div {
+	float: left;
+	width: 49%;
+	height: 700px;
+	border: none;
+}
+div {
+	overflow: scroll;
+	border: 1px solid gray;
+}
+table, caption, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+caption {
+	border-bottom: 0px;
+}
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routes and Schedules | CAT: Capital Area Transit</title>
+<link rel="canonical" href="http://www.cattransit.com/routes-and-schedules/">
+<link rel="shortlink" href="http://www.cattransit.com/?p=3791">
+<script src="js/jquery.js"></script>
+<script src="js/jquery.ui.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/styleswitch.js"></script>
+<script src="js/frontend.js"></script>
+<script src="js/switchcontent.js"></script>
+<script src="js/jquery.collapser.js"></script>
+<script src="js/jquery.form.min.js"></script>
+<script src="js/decimal.js"></script>
+<script src="pdfjs/build/pdf.js"></script>
+<script src="pdfjs/build/pdf.worker.js"></script>
+<link rel="stylesheet" id="fontawesome" href="css/font-awesome.min.css" type="text/css" media="all">
+<link rel="stylesheet" type="text/css" media="all" href="css/jquery.ui.css">
+<script>
+$ = jQuery
+var log = console.log.bind(console)
+var undefined = undefined
+
+function createTable(tableData, caption) {
+	var table = document.createElement('table'),
+		tableBody = document.createElement('tbody')
+	if (caption) {
+		var captionElement = document.createElement('caption')
+		captionElement.appendChild(document.createTextNode(caption))
+		table.appendChild(captionElement)
+	}
+	tableData.forEach(function(rowData) {
+		var row = document.createElement('tr')
+		rowData.forEach(function(cellData) {
+			var cell = document.createElement('td')
+			cell.appendChild(document.createTextNode(cellData))
+			row.appendChild(cell)
+		})
+		tableBody.appendChild(row)
+	})
+	table.appendChild(tableBody)
+	return table
+}
+
+function printCSV(array) {
+	var r = "" + array.map(function(row) {
+		return row.join(',')
+	}).join('')
+	return r
+}
+
+function parseCSV(str) {
+	return str.split("\n").map(function(row) {
+		return row.split("\t");
+	})
+}
+$(function() {
+	// $("iframe").each(function() {
+	// 	$(this)
+	// })
+	var g, i = 0, t
+	$.post("api.php", function(d) {
+		d.forEach(function(e) {
+			$.post(e.path, function(f) {
+				g = parseCSV(f)
+				t = /*"<div>"+*/createTable(g, e.name.substring(0, e.name.length-4))/*+"</div>"*/
+
+				$("iframe").eq(i).after(t)
+				$(t).wrap("<div></div>")
+				$(t).parent().after("<br />")
+				$(t).parent().after("<br />")
+				i++
+			}, "text")
+		})
+	}, "json")
+})
+</script>
+</head>
+
+<body>
+
+<!-- <iframe height="700" src="pdf/Carlisle-Special-Events-Route-Schedule.pdf"></iframe> -->
+<iframe height="700" src="pdf/Schedule-Template-Route-01-8.5x14.pdf"></iframe>
+<iframe height="700" src="pdf/Route-12-Colonial-Park-5-26-152.pdf"></iframe>
+<iframe height="700" src="pdf/Route-120-Winding-Hill-Express1.pdf"></iframe>
+<iframe height="700" src="pdf/Route-13-1-12-15.pdf"></iframe>
+<iframe height="700" src="pdf/Route-14-9-14-15-rev-1.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-16-8.5x11.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-17-8.5x14.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-19-8.5x14.pdf"></iframe>
+<iframe height="700" src="pdf/Route-20-5-26-15.pdf"></iframe>
+<iframe height="700" src="pdf/Route-23-Millersburg-5-26-152.pdf"></iframe>
+<iframe height="700" src="pdf/Route-24-Springford-Apt-5-26-152.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-27-8.5x11.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-322-8.5x14.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-39-8.5x111.pdf"></iframe>
+<iframe height="700" src="pdf/Route-03-11-16-15.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-06-8.5x14.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-07-8.5x141.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-08-8.5x14.pdf"></iframe>
+<iframe height="700" src="pdf/Route-82-Shippensburg-Newville-NSA-Express-5-26-152.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-09-8.5x11.pdf"></iframe>
+<!-- <iframe height="700" src="pdf/Route-81-Ship-Newville-Hbg_2014-09-29.pdf"></iframe> -->
+<iframe height="700" src="pdf/Route-A-New-Cumberland-5-26-153.pdf"></iframe>
+<iframe height="700" src="pdf/Schedule-Template-Route-B-Abacus-8.5x11.pdf"></iframe>
+<iframe height="700" src="pdf/Route-B-Highland-Park-5-26-152.pdf"></iframe>
+<iframe height="700" src="pdf/Route-C-Carlisle-Local-5-19-14.pdf"></iframe>
+<iframe height="700" src="pdf/Route-D-Shoppers-Special-1-12-15.pdf"></iframe>
+<iframe height="700" src="pdf/Route-F-Enola-1-12-15.pdf"></iframe>
+<!-- <iframe height="700" src="pdf/Route-M-Downtown-Mechanicsburg-2013.05.pdf"></iframe> -->
+
+
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+To Downtown Harrisburg — AM
+Winding Hill P&R	Market Square Transfer Center	4th & Market	Commonwealth & North	7th & Reily
+6:52	7:15	7:16	7:20	7:23
+7:12	7:35	7:36	7:40	7:43
+To Downtown Harrisburg — PM
+7th & Reily	Commonwealth & North	Train Station	Winding Hill P&R
+3:45	3:48	3:50	4:10
+4:45	4:48	4:50	5:10

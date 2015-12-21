@@ -1,0 +1,7 @@
+Transfer Center	7th & North	20th & State	Walnut Crossing	Eagle Crest Apts	Osteopathic Hosp	Lakewood Hills Apts	Pennswood Apts	Pennswood Apts	Lakewood Hills Apts	Osteopathic Hosp	Eagle Crest Apts	Walnut Crossing	20th & State	Cmnwlth & North	3rd & Walnut	Transfer Center
+1	4	5	6	7	8	9	10	10	9	8	7	6	5	3	2	1
+6:05	6:15	6:20	6:23	6:28H	6:31H	6:32H	6:39	6:40	6:46H	6:47H	6:49H	6:54	6:59	7:07	7:11	7:15
+7:05	7:15	7:20	7:23	7:28H	7:31H	7:32H	7:39	7:40	7:46H	7:47H	7:49H	7:54	7:59	8:07	8:11	8:15
+4:10	4:20	4:25	4:28	4:33H	4:36H	4:37H	4:44	4:45	4:51H	4:52H	4:54H	4:59	5:04	5:12	5:16	5:20
+5:20	5:30	5:35	5:38	5:43H	5:46H	5:47H	5:54	5:55	6:01H	6:02H	6:04H	6:09	6:14	6:22	6:26	6:30
+From Downtown	To downtown
