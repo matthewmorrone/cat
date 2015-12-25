@@ -15,6 +15,9 @@ switch ($mode) {
 		$output = listdir($handle);
 		echo json_encode($output);
 	break;
+	case "routes":
+		routes();
+	break;
 	default:
 		echo "try again.\n";
 	break;
@@ -42,4 +45,8 @@ function listdir($handle) {
 		}
 	}
 	return $output;
+}
+function routes() {
+	$url = "http://www.cattransit.com/route-changes-delays-detours/";
+	echo file_get_contents($url);
 }
