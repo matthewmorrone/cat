@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html contenteditable>
+<head>
+<title>Routes and Schedules | CAT: Capital Area Transit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+::-webkit-scrollbar {
+	width: 0 !important;
+}
+* {
+	margin: 0px;
+	padding: 0px;
+	background-color: transparent;
+}
+body {
+	background-color: transparent;
+}
+a, :link, :visited {
+	color: #0000EE; /*#0000FF*/
+	text-decoration: none !important;
+}
+ol, ul, li {
+	list-style-type: none;
+}
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+select, option {
+	width: 200px;
+}
+p {
+	text-align: justify;
+}
+.entry-content div:hover {
+	background-color: lightgray;
+}
+section {
+	/*border: 1px solid lightgray;*/
+}
+.overlay {
+	/*background-color: rgba(0, 0, 0, .25) !important;*/
+	background-color: #bada55;
+	border: 1px solid black !important;
+}
+.overlaid {
+	text-align: center;
+	/*background-color: rgba(128, 128, 128, .5);*/
+	z-index: 1001;
+	background-color: #bada55;
+	width: 100px;
+	border: 1px solid green;
+}
+.ui-resizable-helper { border: 1px dotted gray; }
+.innerlay {
+	font-size: 10px;
+	vertical-align: middle;
+	float: none;
+	margin: auto;
+	z-index: 1002;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateY(-50%) translateX(-50%);
+}
+.invert {
+	background-color: black;
+	-webkit-filter: invert(100%);
+}
+.resizable { width: 150px; height: 150px; padding: 0.5em; }
+.resizable h3 { text-align: center; margin: 0; }
+</style>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="https://code.jquery.com/color/jquery.color.plus-names-2.1.2.js"></script>
+<link rel='stylesheet' href="https://code.jquery.com/ui/1.12.0-beta.1/themes/smoothness/jquery-ui.css"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<script src="https://rawgit.com/flatiron/director/master/build/director.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+<script src="https://cdn.rawgit.com/namuol/cheet.js/master/cheet.js"></script>
+<script>
+$ = jQuery
+var log = console.log.bind(console)
+initialRoute = window.location.hash.replace(/^#/, '')
+
+window.twttr = (function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {}
+	if (d.getElementById(id)) return t
+	js = d.createElement(s)
+	js.id = id
+	js.src = "https://platform.twitter.com/widgets.js"
+	fjs.parentNode.insertBefore(js, fjs)
+	t._e = []
+	t.ready = function(f) {
+		t._e.push(f)
+	}
+	return t;
+}(document, "script", "twitter-wjs"));
+
+$(document).on("mouseenter", ".twitter-timeline", function() {
+	$("iframe")
+		.height(1000)
+		.contents()
+		.find(".p-nickname, .u-url.profile, .avatar, .timeline-header, .timeline-footer, .footer, .p-author")
+		.remove()
+})
+$(document).on("load", "iframe, .twitter-timeline", function() {
+	$("iframe")
+		.height(1000)
+		.contents()
+		.find(".p-nickname, .u-url.profile, .avatar, .timeline-header, .timeline-footer, .footer, .p-author")
+		.remove()
+})
+
+
+
+$(function() {
+	cheet('up up down down left right left right',	/*b a*/function () {
+		function* areyouready() {
+			yield "are"
+			yield "you"
+			yield "ready"
+		}
+		var it = new areyouready()
+		var overlay = $("<div class='overlay'>", {})
+		overlay.css({
+			left: $(window).width() * .1,
+			top: $(window).height() * .1,
+			width: $(window).width() * .8,
+			height: $(window).height() * .8,
+			position: "absolute",
+			zIndex: 1001
+		})
+		var innerlay = $("<div class='innerlay'></div>")
+		innerlay.text(it.next().value)
+		overlay.append(innerlay)
+		$(document.body).append(overlay)
+		var b = false
+		var i = setInterval(function() {
+			if (b) 	$(document.body).addClass("invert")
+			else	$(document.body).removeClass("invert")
+			b = !b
+		}, 100)
+		innerlay.animate({
+			fontSize: "2000%"
+		}, 1000, function() {
+			innerlay.css("font-size", "100%").text(it.next().value)
+			innerlay.animate({
+				fontSize: "2000%"
+			}, 1000, function() {
+				innerlay.css("font-size", "100%").text(it.next().value)
+				innerlay.animate({
+					fontSize: "2000%"
+				}, 1000, function() {
+					clearInterval(i)
+					$(".invert").removeClass("invert")
+					innerlay.remove()
+					overlay.animate({
+						left: $(window).width() * .7,
+						top: $(window).height() * .1,
+						width: $(window).width() * .2,
+						height: $(window).height() * .3,						
+					}, 1000, function() {
+						overlay.addClass("resizable")
+						overlay.addClass("ui-widget-content")
+						overlay.append($("<div class='loader'></div>"))
+						$(overlay).find(".loader").load("colors.html")
+						$(overlay).draggable().resizable({handles: "e, s, se"})
+
+					})
+				}).delay(1000)
+			})
+		})
+
+	})
+	var a, li, id, ids = []
+
+
+	$("#alerts section").load("pages/alerts .entry-content", function(d) {
+		$("section").find(".entry-content p:eq(0)").remove()
+		$("#alerts h3").each(function() {
+			a = document.createElement("a")
+			li = document.createElement("li")
+			id = $(this).find("a")[0].href.split("/").reverse()[1]
+			a.innerText = this.innerText
+			a.href = "#/alerts/" + id
+			$(a).attr("class", "menu")
+			li.appendChild(a)
+			$("#alertlist")[0].appendChild(li)
+			$(this).nextUntil("h3").andSelf().wrapAll("<div class='alert' id='"+id+"'>")
+		})
+	})
+	$("#faires section").load("pages/faires #container", function(d) {
+
+	})
+	$("#routes section").load("pages/routes .entry-content", function(d) {
+		$("#routes section").find("#routespage p:eq(0)").remove()
+		$("#routes section").find("iframe").remove()
+		$("#routespage").prev().remove()
+		$("#routespage").remove()
+		$(".route").each(function() {
+			a = $(this).find("h3").text()
+			id = a.split(" ").slice(0, 2).join("")
+			if (ids.indexOf(id) < 0) {
+				ids.push(id)
+			}
+			else {
+				$("#"+ids[ids.indexOf(id)]).attr("id", ids[ids.indexOf(id)]+"1")
+				id = id+"2"
+				ids.push(id)
+			}
+			$(this).attr("id", id)
+		})
+		$(".route").each(function() {
+			a = document.createElement("a")
+			li = document.createElement("li")
+			id = $(this).attr("id")
+			a.innerText = $(this).find("h3").text()
+			a.href = "#/routes/" + id
+			$(a).attr("class", "menu")
+			li.appendChild(a)
+			$("#routelist")[0].appendChild(li)
+		})
+		// cb()
+	})
+
+})
+
+
+var home	= function() {log("#home");		$("[href='#home']").click()/*.tab('show')*/}
+var alerts	= function(id) {
+	log("#alerts", id);	
+	$("[href='#alerts']").click()
+	if (id) {
+		$(".alert").hide()
+		$("#"+id).show()
+	}
+	else {
+		$(".alert").show()
+	}
+}
+var faires	= function() {log("#faires");	$("[href='#faires']").click()/*.tab('show')*/}
+var routes	= function(id) {
+	log("#routes", id);	
+	// $("[href='#routes']").click()
+	if (id) {
+		$(".route").hide()
+		$("#"+id).show()
+	}
+	else {
+		$(".route").show()
+	}
+}
+
+
+var pages = {
+	'home':			home,
+	'alerts':		alerts,
+	'alerts/:id':	alerts,
+	'faires':		faires,
+	'routes':		routes,
+	'routes/:id':	routes
+}
+
+// $(document).on("click", "a.menu", function(e) {
+// 	e.stopPropagation()
+// 	alert($(this).attr("href"))
+// 	router.setRoute($(this).attr("href").replace("#", ""))
+// })
+
+
+var router = Router(pages)
+router.init()
+
+// function cb() {
+// 	log(initialRoute)
+// 	router.setRoute('/')
+// 	router.setRoute(initialRoute)
+// }
+// cb()
+</script>
+</head>
+<body>
+<ul class="nav nav-tabs" role="tablist">
+	<li role="presentation"><a href="#home" role="tab" data-toggle="tab" class="menu">Home</a></li>
+	<li role="presentation"><a href="#alerts" role="tab" data-toggle="tab" class="menu">Alerts</a></li>
+	<li role="presentation"><a href="#tweets" role="tab" data-toggle="tab" class="menu">Live Updates</a></li>
+<!-- 	<li role="presentation" class="dropdown">
+		<a class="dropdown-toggle" data-toggle="dropdown" role="tab" aria-haspopup="true" aria-expanded="false">Alerts</a>
+		<ul class="dropdown-menu" id="alertlist">
+			<li><a href="#alerts" data-toggle="tab" class="menu">All</a></li>
+			<li role="separator" class="divider"></li>
+		</ul>
+	</li> -->
+	<li role="presentation"><a href="#faires" role="tab" data-toggle="tab" class="menu">Faires</a></li>
+	<li role="presentation"><a href="#routes" role="tab" data-toggle="tab" class="menu">Routes</a></li>
+<!-- 	<li role="presentation" class="dropdown">
+		<a class="dropdown-toggle" data-toggle="dropdown" role="tab" aria-haspopup="true" aria-expanded="false">Routes</a>
+		<ul class="dropdown-menu" id="routelist">
+			<li><a href="#routes" data-toggle="tab" class="menu">All</a></li>
+			<li role="separator" class="divider"></li>
+		</ul>
+	</li> -->
+
+</ul>
+
+<div class="tab-content">
+	<div id="home" role="tabpanel" class="tab-pane active">	
+		<section></section>
+	</div>
+	<div id="alerts" role="tabpanel" class="tab-pane">			
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="false" aria-expanded="true">Alerts</button>
+			<ul class="dropdown-menu" id="alertlist" aria-labelledby="dropdownMenu1">
+				<li><a href="#alerts" class="menu">All</a></li>
+				<li role="separator" class="divider"></li>
+			</ul>
+		</div>
+
+		<section></section>
+	</div>
+	<div id="tweets" role="tabpanel" class="tab-pane">
+		<section>
+			<script>
+			</script>
+		<a class="twitter-timeline"
+			data-widget-id="386847684901888000"
+			data-profile-id="79254109"
+			data-user-id="79254109"
+			href="https://twitter.com/CATTransit"
+			data-screen-name="CATTransit">
+		</a>
+
+		</section>
+	</div>
+	<div id="faires" role="tabpanel" class="tab-pane">
+		<section></section>
+	</div>
+	<div id="routes" role="tabpanel" class="tab-pane">			
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="false" aria-expanded="true">Routes</button>
+			<ul class="dropdown-menu" id="routelist" aria-labelledby="dropdownMenu2">
+				<li><a href="#alerts" class="menu">All</a></li>
+				<li role="separator" class="divider"></li>
+			</ul>
+		</div>
+		<section></section>
+	</div>
+</div>
+
+</body>
+</html>
