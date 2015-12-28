@@ -123,13 +123,14 @@ $(function() {
 		return table
 	}
 	$(".tab").hide()
-	$(".menu").click(function() {
+	$(".menu").click(function(e) {
+		e.preventDefault()
 		$(".tab").slideUp(1000)
-		if ($($(this).attr("href")).is(":visible")) {
-			$($(this).attr("href")).slideUp(1000)
+		if ($("#"+$(this).attr("href")).is(":visible")) {
+			$("#"+$(this).attr("href")).slideUp(1000)
 			return
 		}
-		$($(this).attr("href")).slideDown(1000)
+		$("#"+$(this).attr("href")).slideDown(1000)
 	})
 	// $(".menu").last().click()
 	$("#routes").slideDown(2000)
@@ -214,20 +215,20 @@ twttr.ready(function (twttr) {
 </ul> 
 -->
 	
-		<ul class="nav nav-tabs" role="tablist"><li role="presentation"><a href="#home" role="tab" data-toggle="tab" class="menu">Home</a></li></ul>
-		<hr />
+		<a href="home" role="tab" data-toggle="tab" class="menu"><ul class="nav nav-tabs" role="tablist"><li role="presentation">Home</li></ul></a>
+
 		<div id="home" class="tab">
 			<div style='height: 400px'>
 			</div>
 		</div>
-		<ul class="nav nav-tabs" role="tablist"><li role="presentation"><a href="#alerts" role="tab" data-toggle="tab" class="menu">Rider Alerts</a></li></ul>
-		<hr />
+		<a href="alerts" role="tab" data-toggle="tab" class="menu"><ul class="nav nav-tabs" role="tablist"><li role="presentation">Rider Alerts</li></ul></a>
+
 		<div id="alerts" class="tab">
 			<section></section>
 			<!-- <div style='height: 400px'></div> -->
 		</div>
-		<ul class="nav nav-tabs" role="tablist"><li role="presentation"><a href="#tweets" role="tab" data-toggle="tab" class="menu">Tweet Updates</a></li></ul>
-		<hr />
+		<a href="tweets" role="tab" data-toggle="tab" class="menu"><ul class="nav nav-tabs" role="tablist"><li role="presentation">Tweet Updates</li></ul></a>
+
 		<div id="tweets" class="tab">
 			<a class="twitter-timeline"
 				data-widget-id="386847684901888000"
@@ -238,14 +239,13 @@ twttr.ready(function (twttr) {
 				>
 			</a>
 		</div>
-		<ul class="nav nav-tabs" role="tablist"><li role="presentation"><a href="#faires" role="tab" data-toggle="tab" class="menu">Faires</a></li></ul>
-		<hr />
+		<a href="faires" role="tab" data-toggle="tab" class="menu"><ul class="nav nav-tabs" role="tablist"><li role="presentation">Faires</li></ul></a>
+
 		<div id="faires" class="tab">
 			<section></section>
 			<!-- <div style='height: 400px'></div> -->
 		</div>
-		<ul class="nav nav-tabs" role="tablist"><li role="presentation active"><a href="#routes" role="tab" data-toggle="tab" class="menu">Routes and Schedules</a></li>
-		<hr />
+		<a href="routes" role="tab" data-toggle="tab" class="menu"><ul class="nav nav-tabs" role="tablist"><li role="presentation">Routes and Schedules</li></ul></a>
 		<div id="routes" class="tab">
 			<div id="anchors"><a href="#Route1">Route 1 — Market Street</a><a href="#Route3">Route 3 — Third Street</a><a href="#Route6">Route 6 — Sixth Street</a><a href="#Route7">Route 7 — Middletown</a><a href="#Route8">Route 8 — Derry/Rutherford</a><a href="#Route9">Route 9 — City Island-HACC</a><a href="#Route12">Route 12 — Colonial Park — Colonial Commons — Gateway — Linglestown</a><a href="#Route13">Route 13 — Paxton Street</a><a href="#Route14">Route 14 — Union Deposit — Four Seasons</a><a href="#Route16">Route 16 — Pennswood</a><a href="#Route17">Route 17 — 17th Street &amp; Union Deposit Road</a><a href="#Route19">Route 19 — Steelton</a><a href="#Route20">Route 20 — High Pointe Commons</a><a href="#Route23">Route 23 — Elizabethville — Millersburg — Halifax</a><a href="#Route24">Route 24 — Springford Apartments via Locust Lane</a><a href="#Route27">Route 27 — Hall Manor via Hamilton Health Center</a><a href="#Route39">Route 39 — Herr Street / Blue Mt. Commons</a><a href="#Route81">Route 81 — Shippensburg — Newville — Carlisle — Harrisburg Express</a><a href="#Route82">Route 82 — Shippensburg — Newville — Mechanicsburg — NSA Express</a><a href="#Route120">Route 120 — Winding Hill Express</a><a href="#Route322">Route 322 — Hershey Hummelstown</a><a href="#RouteA">Route A — New Cumberland</a><a href="#RouteB">Route B — ABACUS</a><a href="#RouteB">Route B — Highland Park Westport</a><a href="#RouteC1">Route C — Carlisle Local and Commuter Express</a><a href="#RouteC2">Route C — Allen Road Warehouses</a><a href="#CarlisleCirculator">Carlisle Circulator</a><a href="#CarlisleSpecialEvents">Carlisle Special Events</a><a href="#RouteD">Route D — Capital City Mall</a><a href="#RouteF">Route F — Enola</a><a href="#RouteK">Route K — Erford Road</a><a href="#RouteM">Route M — Mechanicsburg — Local &amp; Express Service</a><a href="#RouteMA">Route MA — Mechanicsburg — Arnold Logicstics</a><a href="#ShippensburgBlue">Shippensburg Raider Regional Transit — Blue Route</a><a href="#ShippensburgRed">Shippensburg Raider Regional Transit — Red Route</a></div>
 			<div id="content" role="main" class="routespage">
@@ -695,6 +695,7 @@ twttr.ready(function (twttr) {
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Chateau Apartments, Downtown Shippensburg, Shippensburg Univ. Campus, Wal-Mart, Madison Apts</i></span></div>
 							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="33">View Route Details</a>
 							<div class="route-details">
+
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Ship-Blue-Route-8-25-14.pdf" target="_blank">Download Current Schedule — 08/25/2014</a></p>
 							</div>
 						</div>
