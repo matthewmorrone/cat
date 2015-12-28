@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Routes and Schedules | CAT: Capital Area Transit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css">
+<style>
+::-webkit-scrollbar {
+	width: 0 !important;
+}
+* {
+	margin: 0px;
+	padding: 0px;
+}
+a, :link, :visited {
+	color: #0000EE; /*#0000FF*/
+	text-decoration: none !important;
+}
+ol, ul, li {
+	list-style-type: none;
+}
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+select, option {
+	width: 200px;
+}
+p {
+	text-align: justify;
+}
+.entry-content div:hover {
+	background-color: lightgray;
+}
+section {
+	height: 100px;
+	overflow-y: hidden;
+}
+</style>
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="https://rawgit.com/flatiron/director/master/build/director.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+<script src="https://cdn.rawgit.com/namuol/cheet.js/master/cheet.js"></script>
+<script>
+$ = jQuery
+log = console.log.bind(console)
+function c(tag, attrs) {return $(tag, attrs)[0]}
+var loadAlertList = function() {
+	$.post("pages/alerts", function(d) {
+		$(d).find(".entry-content p:eq(0)").remove()
+		var urls = $.map($("section h3 a"), function(a) {
+			return $(a)[0].href.split("/").reverse()[1]
+		})
+		$(d).find(".entry-content h3 a").each(function(i, o) {
+			var a = c("<a>", {
+				text: o.innerText,
+				href: "#/alerts/" + o.href.split("/").reverse()[1]
+			})
+			$("#alertsList").append(c("<li>", {html: a}))
+		})
+	}, "html")
+}
+var loadAlerts = function() {
+	$("#alerts").load("pages/alerts .entry-content", function(d) {
+		$("#alerts").find(".entry-content p:eq(0)").remove()
+		var links = $("section h3 a").map(function() {
+			return $(this)[0]
+		})
+		var urls = $.map($("section h3 a"), function(a) {
+			return $(a)[0].href.split("/").reverse()[1]
+		})
+		var el = c("<div></div>")
+		// if (id) {
+		// 	el = c("<div></div>", {id: id})
+		// }
+		$("#alerts h3").each(function() {
+			$(this).nextUntil("h3").andSelf().wrapAll(el)
+		})
+		// if (id) {
+		// 	$("#alerts").load(links[urls.indexOf(id)].href + " #container .post", function() {
+		// 		$(".entry-utility").remove()
+		// 	})
+		// }
+	})
+
+}
+var loadFaires = function() {
+	$("#faires").load("pages/faires #container", function(d) {
+		$("#faires").find("#routespage p:eq(0)").remove()
+	})
+}
+var loadRouteList = function() {
+	$.post("api/index.php", {mode: "routes"}, function(d) {
+		for (o in d) {
+			if (Object.prototype.hasOwnProperty.call(d, o)) {
+				o = d[o]
+				a = c("<a>", {
+					text: o[4] + " " + o[5],
+					href: "#/routes/" + o[5]
+				})
+				$("#routesList").append(c("<li>", {html: a}))
+			}
+		}
+	}, "json")
+}
+var loadRoutes = function() {
+	$("#routes").load("pages/routes .entry-content", function(d) {
+		$("#routes").find("#routespage p:eq(0)").remove()
+		$("#routes").find("iframe").remove()
+		$("#routespage").prev().remove()
+		$("#routespage").remove()
+		// if (id) {
+		// 	$(".route").hide()
+		// 	$(".route").filter(function() {
+		// 		return $(this).find("h3").text().includes("Route "+id+" ")
+		// 	}).show()
+		// }
+	})
+}
+// var alerts = function(id) {
+// 	log("alerts", id)
+// 	$("section").hide()
+// 	$("#alerts").show()
+// }
+// var faires = function() {
+// 	// $("section").hide()
+// 	log("faires")
+// 	$("#routes").hide()
+// 	$("#alerts").hide()
+// 	$("#faires").show()
+// }
+// var routes = function(id) {
+// 	log("routes", id)
+
+// 	$("#alerts").hide()
+// 	$("#faires").hide()
+// 	$("#routes").show()
+// 	if (id) {
+// 		$(".route").hide()
+// 		$(".route").filter(function() {
+// 			return $(this).find("h3").text().includes("Route "+id+" ")
+// 		}).show()
+// 	}
+
+// }
+var pages = {
+
+	'/alerts': [/*alerts,*/
+		function() {
+			alert("alerts")
+			
+		}
+	],
+	'/alerts/:id': [/*alerts,*/
+		function() {
+			alert("alerts" + id)
+			
+		}
+	],
+	'/faires': [/*faires,*/
+		function() {
+			alert("faires")
+			
+		}
+	],
+	'/routes': [/*routes,*/
+		function() {
+			alert("routes")
+			$("section").hide()
+			$("#routes").remove()
+			
+		}
+	],
+	'/routes/:id': [/*routes,*/
+		function(id) {
+			alert("routes" + id)
+			
+		}
+	]
+	// '/': [
+	// 	function() {
+
+	// 	}
+	// ]
+}
+
+
+var router = Router(pages)
+router.init()
+// router.setRoute("/")
+log(router.getRoute())
+
+
+
+$(function() {
+	// $("section").hide()
+
+
+	loadAlertList()
+	loadAlerts()
+	loadFaires()
+	loadRouteList()
+	loadRoutes()
+
+
+})
+
+
+
+</script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">CAT</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alerts<span class="caret"></span></a>
+				<ul class="dropdown-menu" id="alertsList">
+					<li><a href="#/alerts">All</a></li>
+					<li role="separator" class="divider"></li>
+				</ul>
+			</li>
+		</ul>
+		<ul class="nav navbar-nav">
+			<li><a href="#/faires">Faires</a></li>
+		</ul>
+		<ul class="nav navbar-nav">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Routes<span class="caret"></span></a>
+				<ul class="dropdown-menu" id="routesList">
+					<li><a href="#/routes">All</a></li>
+					<li role="separator" class="divider"></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav>
+<!-- <div class="container"> -->
+
+
+
+
+<!-- <div class="row"><div class="col-md-6"> --><section id="alerts"></section><!-- </div></div> -->
+<!-- <div class="row"><div class="col-md-6"> --><section id="faires"></section><!-- </div></div> -->
+<!-- <div class="row"><div class="col-md-6"> --><section id="routes"></section><!-- </div></div> -->
+
+<!-- </div> -->
+
+</body>
+</html>

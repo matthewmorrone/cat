@@ -154,11 +154,11 @@ body, input, textarea, .page-title span, .pingback a.url {
 	line-height: 18px;
 }
 
-h3#comments-title, h3#reply-title, #access .menu, #access div.menu ul, #cancel-comment-reply-link, .form-allowed-tags, #site-info, #site-title, #wp-calendar, .comment-meta, .comment-body tr th, .comment-body thead th, .entry-content label, .entry-content tr th, .entry-content thead th, .entry-meta, .entry-title, .entry-utility, #respond label, .navigation, .page-title, .pingback p, .reply, .widget-title, .wp-caption-text, input[type=submit] {
+/*h3#comments-title, h3#reply-title, #access .menu, #access div.menu ul, #cancel-comment-reply-link, .form-allowed-tags, #site-info, #site-title, #wp-calendar, .comment-meta, .comment-body tr th, .comment-body thead th, .entry-content label, .entry-content tr th, .entry-content thead th, .entry-meta, .entry-title, .entry-utility, #respond label, .navigation, .page-title, .pingback p, .reply, .widget-title, .wp-caption-text, input[type=submit] {
 	font-family: Arial, Helvetica, sans-serif;
 	color: #FFF;
 }
-
+*/
 pre {
 	font-family: "Courier 10 Pitch", Courier, monospace;
 }
@@ -344,7 +344,7 @@ textarea {
 	padding: 2px;
 }
 
-a:link {
+/*a:link {
 	color: #43439e;
 }
 
@@ -354,7 +354,7 @@ a:visited {
 
 a:active, a:hover {
 	color: #cf143f;
-}
+}*/
 
 
 /* Text meant only for screen readers */
@@ -744,21 +744,21 @@ a.show-route:hover {
 	width: auto;
 }
 
-#content tr th, #content thead th {
+/*#content tr th, #content thead th {
 	color: #888;
 	font-weight: bold;
-}
+}*/
 
-#content tr td {
+/*#content tr td {
 	border-top: 0px;
 	padding: 5px;
 	vertical-align: top;
 	border: 1px solid #e7e7e7
-}
+}*/
 
-#content tr.odd td {
+/*#content tr.odd td {
 	background: #f2f7fc;
-}
+}*/
 
 #righttable {
 	float: right;

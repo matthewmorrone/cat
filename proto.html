@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Routes and Schedules | CAT: Capital Area Transit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css">
+<style>
+::-webkit-scrollbar {
+	width: 0 !important;
+}
+* {
+	margin: 0px;
+	padding: 0px;
+}
+a, :link, :visited {
+	color: #0000EE; /*#0000FF*/
+	text-decoration: none !important;
+}
+ol, ul, li {
+	list-style-type: none;
+}
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+select, option {
+	width: 200px;
+}
+p {
+	text-align: justify;
+}
+.entry-content div:hover {
+	background-color: lightgray;
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="https://rawgit.com/flatiron/director/master/build/director.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js"></script>
+<script src="https://cdn.rawgit.com/namuol/cheet.js/master/cheet.js"></script>
+<script>
+
+
+$ = jQuery
+var log = console.log.bind(console)
+var alerts = function(id) {
+	$("section").load("pages/alerts .entry-content", function(d) {
+		$("section").find(".entry-content p:eq(0)").remove()
+		var links = $("section h3 a").map(function() {
+			return $(this)[0]
+		})
+		var urls = $.map($("section h3 a"), function(a) {
+			return $(a)[0].href.split("/").reverse()[1]
+		})
+		$("section h3").each(function() {
+			$(this).nextUntil("h3").andSelf().wrapAll("<div>")
+		})
+		if (id) {
+			$("section").load(links[urls.indexOf(id)].href + " #container .post", function() {
+				$(".entry-utility").remove()
+			})
+		}
+	})
+}
+var faires = function() {
+	$("section").load("pages/faires #container", function(d) {
+		$("section").find("#routespage p:eq(0)").remove()
+	})
+}
+var routes = function(id) {
+	$("section").load("pages/routes .entry-content", function(d) {
+		$("section").find("#routespage p:eq(0)").remove()
+		$("section").find("iframe").remove()
+		$("#routespage").prev().remove()
+		$("#routespage").remove()
+		if (id) {
+			$(".route").hide()
+			$(".route").filter(function() {
+				return $(this).find("h3").text().includes("Route "+id+" ")
+			}).show()
+		}
+	})
+}
+
+var pages = {
+	'/alerts': [alerts, function() {}],
+	'/alerts/:id': [alerts, function() {}],
+	'/faires': [faires, function() {}],
+	'/routes': [routes, function() {}],
+	'/routes/:id': [routes, function() {}]
+}
+$(document).on("click", "section a", function(e) {
+	e.preventDefault()
+})
+$(document).on("change", "#alerts", function(e) {
+	e.preventDefault()
+	router.setRoute($(this).find(":selected").val())
+})
+
+$(document).on("change", "#routes", function(e) {
+	e.preventDefault()
+	router.setRoute($(this).find(":selected").val())
+})
+
+
+var router = Router(pages)
+router.init()
+// router.setRoute("/")
+log(router.getRoute())
+
+
+function c(tag, attrs) {
+	return $(tag, attrs)[0]
+}
+$(function() {
+	$.post("pages/alerts", function(d) {
+		$(d).find(".entry-content p:eq(0)").remove()
+		var urls = $.map($("section h3 a"), function(a) {
+			return $(a)[0].href.split("/").reverse()[1]
+		})
+		$(d).find(".entry-content h3 a").each(function(i, o) {
+			var a = c("<a>", {
+				text: o.innerText,
+				href: "/alerts/" + o.href.split("/").reverse()[1]
+			})
+			$("#alertsList").append(c("<li>", {html: a}))
+			$("#alerts").append(c("<option>", {
+				text: o.innerText,
+				value: "/alerts/" + o.href.split("/").reverse()[1]
+			}))
+			$("p img, p img[alt='']").remove()
+		})
+	}, "html")
+
+	$.post("api/index.php", {mode: "routes"}, function(d) {
+		for (o in d) {
+			if (Object.prototype.hasOwnProperty.call(d, o)) {
+			a = c("<a>", {
+				text: o[4] + " " + o[5],
+				href: "/routes/" + o[5]
+			})
+			$("#routesList").append(c("<li>", {html: a}))
+			$("#routes").append(c("<option>", {text: o[4] + " " + o[5], value: "/routes/" + o[5]}))
+			}
+		}
+	}, "json")
+})
+
+
+
+</script>
+</head>
+<body>
+<ul class="nav nav-tabs">
+	<li role="presentation"><a href="#">Alerts</a></li>
+	<li role="presentation"><a href="#">Faires</a></li>
+	<li role="presentation"><a href="#">Routes</a></li>
+</ul>
+<div class="container-fluid">
+<!-- <div class="row">
+	<div class="col-xs-1 col-md-4"><a href="#/alerts">alerts</a></div>
+	<div class="col-xs-2 col-md-8"><select id="alerts"><option>Select an alert&hellip;</option></select></div>
+</div>
+<div class="row">
+	<div class="col-xs-1 col-md-4"><a href="#/faires">faires</a></div>
+	<div class="col-xs-2 col-md-8"> </div>
+</div>
+<div class="row">
+	<div class="col-xs-1 col-md-4"><a href="#/routes">routes</a></div>
+	<div class="col-xs-2 col-md-8"><select id="routes"><option>Select a route&hellip;</option></select></div>
+</div> -->
+<div class="row">
+	<div class="col-md-3">
+		<dl class="dl-horizontal">
+			<dt><div><a href="#/alerts">alerts</a></div></dt>
+			<dd><div><select id="alerts"><option>Select an alert&hellip;</option></select></div></dd>
+			<dt><div><a href="#/faires">faires</a></div></dt>
+			<dd><div><select id="faires"><option>Select	a faire&hellip;</option></select></div></dd>
+			<dt><div><a href="#/routes">routes</a></div></dt>
+			<dd><div><select id="routes"><option>Select	a route&hellip;</option></select></div></dd>
+		</dl>
+	</div>
+<!-- 	<div class="col-md-2">
+<div class="dropdown">
+	<button class="btn btn-default dropdown-toggle" type="button" id="alertsdd" data-toggle="dropdown" aria-haspopup="true">Alerts<span class="caret"></span></button>
+	<ul class="dropdown-menu" id="alertsList" aria-labelledby="alertsdd">
+	</ul>
+</div>
+
+
+	</div>
+	<div class="col-md-2">
+<div class="dropdown">
+	<button class="btn btn-default dropdown-toggle" type="button" id="routesdd" data-toggle="dropdown" aria-haspopup="true">Routes<span class="caret"></span></button>
+	<ul class="dropdown-menu" id="routesList" aria-labelledby="routesdd">
+	</ul>
+</div>
+
+
+	</div>
+</div> -->
+
+
+<div class="row">
+	<div class="col-md-3">
+		<section></section>
+	</div>
+</div>
+<!--
+<section data-route="alerts">alerts</section>
+<section data-route="faires">faires</section>
+<section data-route="routes">routes</section>
+-->
+</div>
+
+</body>
+</html>

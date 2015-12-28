@@ -1,0 +1,69 @@
+<style>
+.overlay td {
+	width: 50px;
+}
+select, input[type='text'], input[type='color'] {
+	width: 100%;
+}
+
+</style>
+
+<table style="border: 0">
+<tr><td colspan=2>
+<select id="which">
+	<option value="body">Body</option>
+	<option value="a">Links</option>
+	<option value='li[role="presentation"]'>Tabs</option>
+</select>
+</td></tr>
+<tr>
+<form onsubmit="return false" oninput="result.value = color.value">
+<td><input type='text' id="resultColor" name="result" for="color"></input></td>
+<td><input type="color" value="#bada55" name="color" id="color"></input></td>
+</form>
+</tr>
+<tr>
+<form onsubmit="return false" oninput="result.value = backgroundColor.value">
+<td><input type='text' id="resultBackgroundColor" name="result" for="backgroundColor"></input></td>
+<td><input type="color" value="#bada55" name="backgroundColor" id="backgroundColor"></input></td>
+</form>
+</tr>
+<tr>
+<form onsubmit="return false" oninput="result.value = borderColor.value">
+<td><input type='text' id="resultBorderColor" name="result" for="borderColor"></input></td>
+<td><input type="color" value="#bada55" name="borderColor" id="borderColor"></input></td>
+</form>
+</tr>
+</table>
+
+
+<script>
+var tags = []
+$("*").each(function() {
+	if (tags.indexOf(this.tagName)) {
+		tags.push(this.tagName)
+	}
+})
+	log(tags)
+
+
+
+jQuery.Color.fn.contrastColor = function() {
+    var r = this._rgba[0], g = this._rgba[1], b = this._rgba[2]
+    return (((r*299)+(g*587)+(b*144))/1000) >= 131.5 ? "black" : "white"
+}
+$(".overlay input").change(function() {
+	$($("#which").val()).css({color: $("#color").val(), backgroundColor: $("#backgroundColor").val(), borderColor: $("#borderColor").val()})
+})
+// $(".nav, .nav *, .tab-content, .tab-content *").click(function(e) {
+// 	e.stopImmediatePropagation()
+// 	// log($.Color($(this).css("color")).toHexString(), $.Color($(this).css("backgroundColor")).toHexString(), $.Color($(this).css("borderColor")).toHexString())
+// 	$("#resultColor").val($.Color($(this).css("color")).toHexString())
+// 	$("#color").val($.Color($(this).css("color")).toHexString())
+// 	$("#resultBackgroundColor").val($.Color($(this).css("backgroundColor")).toHexString())
+// 	$("#backgroundColor").val($.Color($(this).css("backgroundColor")).toHexString())
+// 	$("#resultBorderColor").val($.Color($(this).css("borderColor")).toHexString())
+// 	$("#borderColor").val($.Color($(this).css("borderColor")).toHexString())
+// 	return true
+// })
+</script>

@@ -1,0 +1,99 @@
+
+<nav class="navbar navbar-default">
+	<div class="container-fluid">
+
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#">CAT</a>
+		</div>
+		<ul class="nav navbar-nav">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Alerts<span class="caret"></span></a>
+				<ul class="dropdown-menu" id="alertsList">
+					<li><a href="#/alerts">All</a></li>
+					<li role="separator" class="divider"></li>
+				</ul>
+			</li>
+		</ul>
+		<ul class="nav navbar-nav">
+			<li><a href="#/faires">Faires</a></li>
+		</ul>
+		<ul class="nav navbar-nav">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Routes<span class="caret"></span></a>
+				<ul class="dropdown-menu" id="routesList">
+					<li><a href="#/routes">All</a></li>
+					<li role="separator" class="divider"></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</nav>
+
+<div class="row">
+	<div class="col-xs-1 col-md-4"><a href="#/alerts">alerts</a></div>
+	<div class="col-xs-2 col-md-8">
+		<select id="alerts">
+			<option>Select an alert&hellip;</option>
+		</select>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-1 col-md-4"><a href="#/faires">faires</a></div>
+	<div class="col-xs-2 col-md-8"> </div>
+</div>
+<div class="row">
+	<div class="col-xs-1 col-md-4"><a href="#/routes">routes</a></div>
+	<div class="col-xs-2 col-md-8">
+		<select id="routes">
+			<option>Select a route&hellip;</option>
+		</select>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-3">
+		<dl class="dl-horizontal">
+			<dt>
+				<div><a href="#/alerts">alerts</a></div>
+			</dt>
+			<dd>
+				<div>
+					<select id="alerts">
+						<option>Select an alert&hellip;</option>
+					</select>
+				</div>
+			</dd>
+			<dt>
+				<div><a href="#/faires">faires</a></div>
+			</dt>
+			<dd>
+				<div>
+					<select id="faires">
+						<option>Select a faire&hellip;</option>
+					</select>
+				</div>
+			</dd>
+			<dt>
+				<div><a href="#/routes">routes</a></div>
+			</dt>
+			<dd>
+				<div>
+					<select id="routes">
+						<option>Select a route&hellip;</option>
+					</select>
+				</div>
+			</dd>
+		</dl>
+	</div>
+	<div class="col-md-2">
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="alertsdd" data-toggle="dropdown" aria-haspopup="true">Alerts<span class="caret"></span></button>
+			<ul class="dropdown-menu" id="alertsList" aria-labelledby="alertsdd"> </ul>
+		</div>
+	</div>
+	<div class="col-md-2">
+		<div class="dropdown">
+			<button class="btn btn-default dropdown-toggle" type="button" id="routesdd" data-toggle="dropdown" aria-haspopup="true">Routes<span class="caret"></span></button>
+			<ul class="dropdown-menu" id="routesList" aria-labelledby="routesdd"> </ul>
+		</div>
+	</div>
+</div>
