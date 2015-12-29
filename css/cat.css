@@ -460,6 +460,8 @@ a.show-route:hover {
 }
 #content dt, #content th {
 	color: #000;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 #content h1, #content h2, #content h6 {
 	color: #000;

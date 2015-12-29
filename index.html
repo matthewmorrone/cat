@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Routes and Schedules | CAT: Capital Area Transit</title>
 <script src="js/jquery.js"></script>
 <script src="js/jquery.ui.js"></script>
@@ -37,9 +37,17 @@ Object.defineProperty(Array.prototype, 'chunk', {
 		return R
 	}
 })
-$(function() {
+$.fn.textWidth = function(text, font) {
+	if (!$.fn.textWidth.fakeEl) $.fn.textWidth.fakeEl = $('<span>').hide().appendTo(document.body);
+	$.fn.textWidth.fakeEl.text(text || this.val() || this.text()).css('font', font || this.css('font'));
+	return $.fn.textWidth.fakeEl.width();
+};
 
-	var maxLength = 50
+$(function() {
+	$(document).on("click", "th", function() {
+		// alert($(this).textWidth())
+	})
+	var maxLength = 50, $route, $iframe, t, w, h, maxWidth
 	$('option').text(function(i, text) {
 		if (text.length > maxLength) {
 			return text.substr(0, maxLength) + '...';
@@ -48,11 +56,11 @@ $(function() {
 	$(".route").each(function() {
 		$(this).find(".route-serving, .route-details").wrapAll("<div class='route-info'></div>")
 		// $(this).find(".route-info").append($('<div><a href="#" class="back-to-top" title="Back to top">&uarr;</a></div>'))
-		$(this).find(".route-info").append($('<div class="load-placeholder mCustomScrollbar" data-mcs-theme="dark"></div>'))
+		$(this).find(".route-info").append($('<div class="load-placeholder" data-mcs-theme="dark"></div>'))
 	})
 	$(".route").on("click", function() {
 		if (!$(this).find(".route-info").is(":visible")) {
-			var $route = $(this), $iframe
+			$route = $(this), $iframe
 			$route.find("iframe").each(function() {
 				$iframe = $(this)
 				$(".route-info").slideUp(1000)
@@ -61,12 +69,51 @@ $(function() {
 				})
 				$iframe.attr("src", $iframe.attr("data-src"))
 			})
-			$route.find(".load-placeholder").load("tables.html #"+$route.find("h3 a").attr("name"), function() {
+			$route.find(".load-placeholder").load("http://www.matthewmorrone.com/cat/tables.html #"+$route.find("h3 a").attr("name"), function() {
+				
+				$(".rotate").each(function() {
+					// maxWidth = Math.max.apply( null, $(this).find("th").map(function() {
+					//	return $(this).outerWidth(true)
+					// }).get())
+					$(this).find("th").each(function() {
+						t = $(this).text()
+						// w = $(this).width()
+						// h = $(this).height()
+						$(this)[0].innerHTML = ""
+
+						$(this).append($("<div></div>", {text: t}))
+						// $(this).css("transform", "rotate(270deg)")
+						// $(this).find("div").css({width: h})
+						// $(this).css({width: h})
+						// $(this).find("div").css({height: w})
+						// $(this).css({height: w})
+
+					})
+				})
+				var pm, hour
+				$("#"+$route.find("h3 a").attr("name")).find("table").each(function() {
+					pm = false
+					$(this).find("td").each(function() {
+						hour = parseInt($(this).text().trim().split(":")[0], 10)
+						if (hour !== hour) {return}
+						if (hour === 12) {
+							pm = true
+						}
+						if (!pm) {
+							$(this).text($(this).text() + " AM")
+						}
+						else {
+							$(this).text($(this).text() + " PM")
+
+						}
+						// log(hour, pm, $(this).text(), $(this), $(this)[0])
+					})
+				})
 			})
 		}
 	})
 	// $(".route h3").each(function() {
-	// 	$("select").append($("<option></option>", {html: $(this).html()}))
+	//	$("select").append($("<option></option>", {html: $(this).html()}))
 	// })
 	$("select").change(function(e) {
 		e.preventDefault()
@@ -89,6 +136,7 @@ $(function() {
 	if ($('#back-to-top').length) {
 		var scrollTrigger = 100 // px
 		var backToTop = function () {
+
 			var scrollTop = $(window).scrollTop()
 			if (scrollTop > scrollTrigger) {
 				$('#back-to-top').addClass('show')
@@ -123,6 +171,10 @@ $(function() {
 		return table
 	}
 	$(".tab").hide()
+	$(".out").click(function(e) {
+		e.preventDefault()
+		$(this).prevAll("h3").find("a").click()
+	})
 	$(".menu").click(function(e) {
 		e.preventDefault()
 		$(".tab").slideUp(1000)
@@ -138,14 +190,14 @@ $(function() {
 	$("#alerts section").load("http://www.matthewmorrone.com/cat/pages/alerts/index.php .entry-content", function(d) {
 		$("section").find(".entry-content p:eq(0)").remove()
 		$("#alerts h3").each(function() {
-			a = document.createElement("a")
-			li = document.createElement("li")
+			// a = document.createElement("a")
+			// li = document.createElement("li")
 			id = $(this).find("a")[0].href.split("/").reverse()[1]
-			a.innerText = this.innerText
-			a.href = "#/alerts/" + id
-			$(a).attr("class", "menu")
-			li.appendChild(a)
-			$("#alertlist")[0].appendChild(li)
+			// a.innerText = this.innerText
+			// a.href = "#/alerts/" + id
+			// $(a).attr("class", "menu")
+			// li.appendChild(a)
+			// $("#alertlist")[0].appendChild(li)
 			$(this).nextUntil("h3").andSelf().wrapAll("<div class='alert' id='"+id+"'>")
 		})
 	})
@@ -187,20 +239,34 @@ twttr.ready(function (twttr) {
 	<div id="textnav"><b>Main Menu:</b>
 		<div class="textnav">
 			<ul id="menu-textmenu" class="menu">
-				<li id="menu-item-314" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-314"><a href="http://www.cattransit.com/">Home</a></li>
-				<li id="menu-item-324" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-324"><a href="http://www.cattransit.com/about-cat/">About CAT</a></li>
-				<li id="menu-item-437" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-437"><a href="http://www.cattransit.com/services/">Services</a></li>
-				<li id="menu-item-3881" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-3791 current_page_item menu-item-3881"><a href="http://www.cattransit.com/routes-and-schedules/">Routes and Schedules</a></li>
-				<li id="menu-item-317" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-317"><a href="http://www.cattransit.com/fares/">Fares</a></li>
-				<li id="menu-item-885" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-885"><a href="http://www.cattransit.com/employment-2/">Employment</a></li>
-				<li id="menu-item-321" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-321"><a href="http://www.cattransit.com/route-changes-delays-detours/">Rider Alerts</a></li>
-				<li id="menu-item-438" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-438"><a href="http://www.cattransit.com/procurement/">Procurement</a></li>
-				<li id="menu-item-435" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-435"><a href="http://www.cattransit.com/advertising/">Advertising</a></li>
-				<li id="menu-item-2111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2111"><a href="http://www.cattransit.com/newsroom/cat40/">CAT at 40</a></li>
-				<li id="menu-item-3191" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3191"><a href="http://www.cattransit.com/newsroom/media-inquiries/">Media Inquiries</a></li>
-				<li id="menu-item-3192" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3192"><a href="http://www.cattransit.com/newsroom/photo-gallery/">Photo Gallery</a></li>
-				<li id="menu-item-3229" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3229"><a href="http://www.cattransit.com/customer-newsletters/">Customer Newsletter</a></li>
-				<li id="menu-item-3230" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-3230"><a href="http://www.cattransit.com/category/press-releases/">Press Releases</a></li>
+				<li id="menu-item-314" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-314">
+				<a class='out' href="http://www.cattransit.com/">Home</a></li>
+				<li id="menu-item-324" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-324">
+				<a class='out' href="http://www.cattransit.com/about-cat/">About CAT</a></li>
+				<li id="menu-item-437" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-437">
+				<a class='out' href="http://www.cattransit.com/services/">Services</a></li>
+				<li id="menu-item-3881" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-3791 current_page_item menu-item-3881">
+				<a class='out' href="http://www.cattransit.com/routes-and-schedules/">Routes and Schedules</a></li>
+				<li id="menu-item-317" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-317">
+				<a class='out' href="http://www.cattransit.com/fares/">Fares</a></li>
+				<li id="menu-item-885" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-885">
+				<a class='out' href="http://www.cattransit.com/employment-2/">Employment</a></li>
+				<li id="menu-item-321" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-321">
+				<a class='out' href="http://www.cattransit.com/route-changes-delays-detours/">Rider Alerts</a></li>
+				<li id="menu-item-438" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-438">
+				<a class='out' href="http://www.cattransit.com/procurement/">Procurement</a></li>
+				<li id="menu-item-435" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-435">
+				<a class='out' href="http://www.cattransit.com/advertising/">Advertising</a></li>
+				<li id="menu-item-2111" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-2111">
+				<a class='out' href="http://www.cattransit.com/newsroom/cat40/">CAT at 40</a></li>
+				<li id="menu-item-3191" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3191">
+				<a class='out' href="http://www.cattransit.com/newsroom/media-inquiries/">Media Inquiries</a></li>
+				<li id="menu-item-3192" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3192">
+				<a class='out' href="http://www.cattransit.com/newsroom/photo-gallery/">Photo Gallery</a></li>
+				<li id="menu-item-3229" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-3229">
+				<a class='out' href="http://www.cattransit.com/customer-newsletters/">Customer Newsletter</a></li>
+				<li id="menu-item-3230" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-3230">
+				<a class='out' href="http://www.cattransit.com/category/press-releases/">Press Releases</a></li>
 			</ul>
 		</div>
 	</div>
@@ -235,8 +301,7 @@ twttr.ready(function (twttr) {
 				data-profile-id="79254109"
 				data-user-id="79254109"
 				href="https://twitter.com/CATTransit"
-				data-screen-name="CATTransit"
-				>
+				data-screen-name="CATTransit">
 			</a>
 		</div>
 		<a href="faires" role="tab" data-toggle="tab" class="menu"><ul class="nav nav-tabs" role="tablist"><li role="presentation">Faires</li></ul></a>
@@ -293,7 +358,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route1">Route 1 — Market Street</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Market Street, Kline Village</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="0">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="0">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-01-8.5x14.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas0" class="mapholder">
@@ -306,7 +372,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route3">Route 3 — Third Street</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Third Street, Division Street, Uptown Shopping Center, 2nd Street @ Linglestown Road</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="1">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="1">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-03-11-16-15.pdf" target="_blank">Download Current Schedule — 11/16/2015</a></p>
 								<div id="map_canvas1" class="mapholder">
@@ -319,7 +386,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route6">Route 6 — Sixth Street</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Serving: Downtown Harrisburg, Capitol Complex, 6th Street, Uptown Shopping Center, 3rd Street (Night Loop)</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="2">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="2">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-06-8.5x14.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas2" class="mapholder">
@@ -332,7 +400,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route7">Route 7 — Middletown</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Serving: Downtown Harrisburg, Capitol Complex, Riverfront Office Complex Steelton, Highspire, Middletown, Penn State (Middletown Campus), Harrisburg International Airport</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="3">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="3">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-07-8.5x141.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas3" class="mapholder">
@@ -345,7 +414,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route8">Route 8 — Derry — Rutherford</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Serving: Downtown Harrisburg, Derry Street, Harrisburg Mall, Wal-Mart, Fresh Express Farms, Rutherford Square, Sue Drive</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="4">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="4">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-08-8.5x14.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas4" class="mapholder">
@@ -358,7 +428,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route9">Route 9 — City Island — HACC</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Serving: City Island (Park &amp; Ride), Downtown Harrisburg, Capitol Complex, Farm Show, HACC, Blue Cross</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="5">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="5">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-09-8.5x11.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas5" class="mapholder">
@@ -371,7 +442,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route12">Route 12 — Colonial Park — Colonial Commons — Gateway — Linglestown</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, State Street, Colonial Park, Colonial Commons, Paxton Towne Centre, Jonestown Rd., Gateway Center, Linglestown</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="6">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="6">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-12-Colonial-Park-5-26-152.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas6" class="mapholder">
@@ -384,7 +456,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route13">Route 13 — Paxton Street</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Paxton Street, Harrisburg Mall</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="7">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="7">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-13-1-12-15.pdf" target="_blank">Download Current Schedule — 01/12/2015</a></p>
 								<div id="map_canvas7" class="mapholder">
@@ -397,7 +470,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route14">Route 14 — Union Deposit — Four Seasons</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Market Street, Union Square/Dauphin Plaza, Point Mall, Twin Lakes, Four Seasons</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="8">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="8">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-14-9-14-15-rev-1.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas8" class="mapholder">
@@ -410,7 +484,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route16">Route 16 — Pennswood</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, State Street, Osteopathic Hospital, Pennswood Apts.</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="9">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="9">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-16-8.5x11.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas9" class="mapholder">
@@ -423,7 +498,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route17">Route 17 — 17th Street &amp; Union Deposit Road</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, 17th Street, Hamilton Health Center, Derry Street, Berryhill Street, Union Deposit Road, Union Square/Dauphin Plaza, Briarsdale Drive, Osteopathic Hospital, Point Mall, Rutherford Road</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="10">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="10">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-17-8.5x14.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas10" class="mapholder">
@@ -436,7 +512,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route19">Route 19 — Steelton</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Hoy Towers, Juvenile Center, Steelton, Harrisburg Mall</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="11">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="11">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-19-8.5x14.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas11" class="mapholder">
@@ -449,7 +526,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route20">Route 20 — High Pointe Commons</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Derry Street, Harrisburg Mall, TecPort Business Center, Eisenhower Blvd., High Pointe Commons</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="12">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="12">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-20-5-26-15.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas12" class="mapholder">
@@ -462,7 +540,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route23">Route 23 — Elizabethville — Millersburg — Halifax</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Elizabethville, Millersburg, Halifax, Dauphin Park &amp; Ride</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="13">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="13">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-23-Millersburg-5-26-152.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas13" class="mapholder">
@@ -475,7 +554,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route24">Route 24 — Springford Apartments via Locust Lane</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Springford Apartments via Locust Lane</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="14">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="14">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-24-Springford-Apt-5-26-152.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas14" class="mapholder">
@@ -488,7 +568,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route27">Route 27 — Hall Manor via Hamilton Health Center</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, State Street, 17th Street, Hamilton Health Center, Hall Manor</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="15">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="15">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-27-8.5x11.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas15" class="mapholder">
@@ -501,7 +582,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route39">Route 39 — Herr Street — Blue Mt. Commons</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, Herr St., Progress Ave., Susquehanna Township, Whisperwood Apts., Blue Mountain Commons (Park &amp; Ride)</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="16">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="16">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-39-8.5x111.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas16" class="mapholder">
@@ -514,7 +596,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route81">Route 81 — Shippensburg — Newville — Carlisle — Harrisburg Express</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Shippensburg Wal-Mart, Newville Park &amp; Ride, Carlisle Park &amp; Ride, Downtown Harrisburg</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="17">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="17">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-81-Ship-Newville-Hbg_2014-09-29.pdf" target="_blank">Download Current Schedule — 09/29/2014</a></p>
 								<div id="map_canvas17" class="mapholder">
@@ -527,7 +610,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route82">Route 82 — Shippensburg — Newville — Mechanicsburg — Naval Base Express</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Shippensburg Wal-Mart, Newville Park &amp; Ride, Carlisle Commons Park &amp; Ride, Naval Support Activity (Mechanicsburg)</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="18">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="18">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-82-Shippensburg-Newville-NSA-Express-5-26-152.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas18" class="mapholder">
@@ -540,7 +624,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route120">Route 120 — Winding Hill Express</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, Winding Hill Rd. Park &amp; Ride</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="19">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="19">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-120-Winding-Hill-Express1.pdf" target="_blank">Download Current Schedule — 05/20/2013</a></p>
 								<div id="map_canvas19" class="mapholder">
@@ -553,7 +638,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="Route322">Route 322 — Hershey — Hummelstown</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg Hummelstown, Briarcrest Apartments, Penn State Hershey Med. Center, Tanger Outlets (Park &amp; Ride), Downtown Hershey</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="20">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="20">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-322-8.5x14.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 								<div id="map_canvas20" class="mapholder">
@@ -566,7 +652,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteA">Route A — New Cumberland</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Capitol Complex, Downtown Hbg., Lemoyne, Rosemont, New Cumberland, Capital City Airport, New Cumberland Army Depot (DDRE)</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="21">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="21">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-A-New-Cumberland-5-26-153.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas21" class="mapholder">
@@ -579,7 +666,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteB">Route B — ABACUS</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Steelton, Downtown Harrisburg, Abacus Staffing</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="22">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="22">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Schedule-Template-Route-B-Abacus-8.5x11.pdf" target="_blank">Download Current Schedule — 09/14/2015</a></p>
 							</div>
@@ -587,7 +675,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteB">Route B — Highland Park — Westport</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Lemoyne, Camp Hill, Shiremanstown, Mechanicsburg, Health South, Upper Allen Business Park, Rossmoyne Business Center, Westport</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="23">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="23">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-B-Highland-Park-5-26-152.pdf" target="_blank">Download Current Schedule — 05/26/2015</a></p>
 								<div id="map_canvas23" class="mapholder">
@@ -600,7 +689,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteC1">Route C — Carlisle Local and Commuter Express</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, Lemoyne, Camp Hill, Hogestown, New Kingstown, Middlesex, Carlisle</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="24">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="24">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-C-Carlisle-Local-5-19-14.pdf" target="_blank">Download Current Schedule — 05/19/2014</a></p>
 								<div id="map_canvas24" class="mapholder">
@@ -614,7 +704,8 @@ twttr.ready(function (twttr) {
 							<h3><a name="RouteC2">Route C — Allen Road Warehouses — Carlisle</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Allen Road Warehouses — Carlisle</i></span></div>
 							<!--<div class="route-serving"><i class="fa fa-bus"></i><span><i>Steelton, Downtown Harrisburg, Ross Stores</i></span></div>-->
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="25">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="25">View Route Details</a>
 							<div class="route-details">
 								<p><a class="pdf" href="pdf/Route-C-Allen-Rd-12-14-15.pdf" target="_blank">Download Current Schedule — 12/14/2015</a></p>
 								<div id="map_canvas25" class="mapholder">
@@ -627,7 +718,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="CarlisleCirculator">Carlisle Circulator</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Carlisle Regional Medical Center, Professional Offices, Downtown Carlisle, Dickinson College, Projet SHARE, Public Assistance Office, Army War College</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="26">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="26">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Circulator-2-9-151.pdf" target="_blank">Download Current Schedule — 02/09/2015</a></p>
 							</div>
@@ -635,7 +727,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="CarlisleSpecialEvents">Carlisle Special Events</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Carlisle Fairgrounds</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="27">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="27">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Carlisle-Special-Events-Route-Schedule.pdf" target="_blank">Download Current Schedule — 06/05/2015</a></p>
 							</div>
@@ -643,7 +736,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteD">Route D — Capital City Mall</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Holy Spirit Hospital, Susquehanna View Apts., Camp Hill Shopping Mall, Bon-Ton, WalMart, Capital City Mall</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="28">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="28">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-D-Shoppers-Special-1-12-15.pdf" target="_blank">Download Current Schedule — 01/12/2015</a></p>
 								<div id="map_canvas28" class="mapholder">
@@ -656,7 +750,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteF">Route F — Enola</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, West Fairview – Enola, Central PA College, Olympic Skating Park &amp; Ride, Giant, West Shore Hospital</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="29">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="29">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-F-Enola-1-12-15.pdf" target="_blank">Download Current Schedule — 01/12/2015</a></p>
 							</div>
@@ -664,7 +759,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteK">Route K — Erford Road</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, Wormleysburg, Holy Spirit Hospital, Blue Shield, Rupley Park</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="30">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="30">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-K-Erford-Road-9-2-141.pdf" target="_blank">Download Current Schedule — 09/02/2014</a></p>
 								<div id="map_canvas30" class="mapholder">
@@ -677,7 +773,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteM">Route M — Mechanicsburg — Local &amp; Express Service</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Capitol Complex, Lemoyne, Camp Hill, Mechanicsburg</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="31">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="31">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-M-Downtown-Mechanicsburg-2013.05.pdf" target="_blank">Download Current Schedule — 05/20/2013</a></p>
 							</div>
@@ -685,7 +782,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="RouteMA">Route MA — Mechanicsburg — Arnold Logicstics</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Downtown Harrisburg, Lemoyne, Camp Hill, Arnold Logistics (Camp Hill), Arnold Logistics (Mechanicsburg)</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="32">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="32">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Route-MA-Mechanicsburg-Arnold-Logistics.pdf" target="_blank">Download Current Schedule — 05/20/2013</a></p>
 							</div>
@@ -693,7 +791,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="ShippensburgBlue">Shippensburg Raider Regional Transit — Blue Route</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>Chateau Apartments, Downtown Shippensburg, Shippensburg Univ. Campus, Wal-Mart, Madison Apts</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="33">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="33">View Route Details</a>
 							<div class="route-details">
 
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Ship-Blue-Route-8-25-14.pdf" target="_blank">Download Current Schedule — 08/25/2014</a></p>
@@ -702,7 +801,8 @@ twttr.ready(function (twttr) {
 						<div class="route">
 							<h3><a name="ShippensburgRed">Shippensburg Raider Regional Transit — Red Route</a></h3>
 							<div class="route-serving"><i class="fa fa-bus"></i><span><i>High Point Commons, Bard Townhouses, Downtown Shippensburg, Wal-Mart, Chambersburg Mall</i></span></div>
-							<a href="http://www.cattransit.com/routes-and-schedules/#" rel="34">View Route Details</a>
+							
+							<a class='out' href="http://www.cattransit.com/routes-and-schedules/#" rel="34">View Route Details</a>
 							<div class="route-details">
 								<p><i class="fa fa-file-pdf-o"></i><a class="pdf" href="pdf/Ship-Red-Route-8-25-14.pdf" target="_blank">Download Current Schedule — 08/25/2014</a></p>
 							</div>
@@ -712,7 +812,8 @@ twttr.ready(function (twttr) {
 				</div>
 			</div>
 		</div>
-		<div id="footer">©2015 CAT: Capital Area Transit |<a href="http://64.130.20.39/?page_id=354">Site Map</a></div>
+		<div id="footer">©2015 CAT: Capital Area Transit&nbsp;|&nbsp;<a href="http://64.130.20.39/" target="_blank">Desktop Site</a></div>
+		<!-- <a href="http://64.130.20.39/?page_id=354">Site Map</a> -->
 	</div>
 	<a href="#" id="back-to-top" title="Back to top">&uarr;</a>
 </body>
